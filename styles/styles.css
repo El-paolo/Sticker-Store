@@ -5,8 +5,10 @@
 :root{
     --principalFont: 'Oswald', sans-serif;
     --white:#FFF;
-    --black:#1B1B1B;
+    --grey:#1B1B1B;
     --pink:#EE446f;
+    --black:#000;
+    --blackpink:#882664;
 }
 
 html{
@@ -19,37 +21,165 @@ html{
 } 
 
 body{
-    background-color: var(--white);
-    font-size: 1.6rem;
-    line-height: 1.5;
+    background-color: var(--blackpink);
+    font-size:1.6rem;
+    line-height:1.5;
 }
 
 p{
-    font-size: 1.8rem;
-    font-weight: 400;
+    font-size:1.8rem;
+    font-weight:400;
 }
 
 a{
-    text-decoration: none;
+    font-family:var(--principalFont);
+    text-decoration:none;
 }
 
 img{
-    width: 100%;
+    width: 95%;
 }
 
 
 h1, h2, h3{
-    text-align: center;
-    font-weight: bold;
-    color:var(--black);
+    font-family:var(--principalFont);
+    text-align:center;
+    font-weight:bold;
+}
+
+h1{
+    font-size:5rem;
 }
 
 .container{
+    margin:0 auto;
     max-width: 120rem;
+    width: 95%;
 
 }
 
+
+/*header*/
+
+
 .header{
+    display: flex;
+    justify-content: space-between;
+    color:var(--black);
     background-color:var(--pink);
     width: 100%;
+}
+.title{
+    padding:2rem 2rem;
+}
+
+.header-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.header-content h1{
+    text-align: center;
+    margin: 0 ;
+}
+
+
+.nav{
+    display: flex;
+    gap: 2rem;
+    justify-content: flex-end;
+
+}
+
+
+.nav a{
+    color:var(--black);
+    font-size:2rem;
+
+}
+
+.nav a:hover{
+    color: var(--white);
+}
+
+.premain{
+    padding: 2rem;
+    background-color:var(--white)
+}
+
+.premain{
+    display: flex;
+    justify-content: space-between;
+}
+
+.slogan{
+    padding-left: 2rem;
+    font-size:3rem;
+    text-align: left;
+}
+
+
+
+.session {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--principalFont);
+
+}
+
+
+.session input, .session label{
+    margin-right:13rem;
+}
+
+.main{
+    margin-top: 5rem;
+    
+}
+.grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(28rem, 1fr ));
+    column-gap: 2.5rem;
+    row-gap:3rem;
+}
+.sticker-container{
+    background-color: var(--pink);
+    display: flex;
+    flex-direction: column;
+    row-gap:1rem;
+    align-items: center;
+}
+
+
+
+
+.sticker-container img{
+    padding-top: 1rem;
+    border-radius: 0.4rem;
+    
+}
+.btn{
+    cursor: pointer;
+    padding:.5rem 0;
+    width: 80%;
+    font-family: var(--principalFont);
+    font-size: 2rem;
+    margin: 1rem;
+}
+
+.product-name, .product-price{
+
+    font-family: var(--principalFont);
+}
+
+.product-name{
+    font-size:3rem;
+    margin:0;
+}
+
+.product-price{
+    margin:1rem;
+    font-size: 3rem;
 }
