@@ -51,6 +51,16 @@ h1{
     font-size:5rem;
 }
 
+ul{
+    font-family:var(--principalFont);
+    list-style:none;
+}
+
+li{
+    padding: 1rem 0;
+    font-size: 2rem;
+}
+
 .container{
     margin:0 auto;
     max-width: 120rem;
@@ -104,6 +114,9 @@ h1{
     color: var(--white);
 }
 
+
+/**Pre Main**/
+
 .premain{
     padding: 2rem;
     background-color:var(--white)
@@ -129,13 +142,25 @@ h1{
 
 }
 
+#session-button{
+    border:var(--grey) solid 0.2rem;
+    background-color: var(--pink);
+}
 
 .session input, .session label{
-    margin-right:13rem;
+    margin-right:6rem;
 }
+
+
+#session-button:hover{
+    color:var(--white);
+}
+
+/*Main Section*/
 
 .main{
     margin-top: 5rem;
+    padding: 0 0 5rem 0;
     
 }
 .grid{
@@ -153,14 +178,33 @@ h1{
 }
 
 
-
+.stock-product{
+    font-family: var(--principalFont);
+    margin: 0;
+}
 
 .sticker-container img{
     padding-top: 1rem;
     border-radius: 0.4rem;
     
 }
+
+.btn-user{
+    display: flex;
+    align-items:flex-start;
+}
+
+.btn-user button{
+    margin-left:0 ;
+}
+
+
+
+
+
 .btn{
+    border-radius:0.5rem;
+    background-color:var(--white);
     cursor: pointer;
     padding:.5rem 0;
     width: 80%;
@@ -182,4 +226,74 @@ h1{
 .product-price{
     margin:1rem;
     font-size: 3rem;
+}
+
+/**Cart**/
+.payment{
+    background-color: var(--white);
+    margin: 0 auto;
+    padding: 3rem;
+
+    min-height:50rem;
+
+}
+
+.cart-title{
+    text-align: center;
+    font-size: 3rem;
+    padding-left: 2rem;
+
+}
+
+.objects-in{
+    font-size:2.5rem;
+}
+
+
+.payment-elements{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    column-gap:20rem;
+}
+
+.btn-flex{
+    padding-top:2rem ;
+    display: flex;
+    justify-content: center;
+}
+
+
+.x{
+    cursor: pointer;
+    background: var(--pink);
+    padding: 0.2rem;
+    width:0.3rem;
+    height:0.2rem;
+
+}
+.payment-btn{
+    font-family: var(--principalFont);
+    font-size:3rem;
+    width:40%;
+    background-color:var(--pink);
+    color:var(--black);
+    padding: 1rem 0;
+    border-radius:0.5rem;
+
+
+} 
+
+.payment-btn:hover{
+    cursor: pointer;
+    color:var(--white)
+}
+
+/*Footer*/
+footer{
+    background-color: var(--pink);
+    font-family:var(--principalFont);
+    font-size:2rem;
+    text-align: center;
 }
