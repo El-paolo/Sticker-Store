@@ -133,7 +133,12 @@ li{
     text-align: left;
 }
 
-
+.error-text{
+    font-size: 1.8rem;
+    font-weight:300;
+    margin: 0;
+    color:#ff0934;
+}
 
 .session {
     display: flex;

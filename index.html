@@ -18,7 +18,7 @@
     <div class='container header-content'> <h1 class='title'>Sticker Store</h1>
     
     <nav class='nav'>
-        <a href="#">Iniciar sesión</a>
+        <a href="#" id='init-show'>Iniciar sesión</a>
         <a href="#link">Carrito</a></nav> 
     </nav>
 </div>
@@ -34,15 +34,8 @@
             Tus calcomanías favoritas en un sólo lugar
         </h2>
         </div>
-        <form name='session' class='session'>
-            <label >Nombre de Usuario</label>
-            <input id='user-name' type="text">
-            <label >Contraseña</label>
-            <input type="password" id='password'>
-
-        <div class='btn-user'>
-            <button id='session-button' class='btn'>Enviar</button>
-        </div>
+        <form  id ='session' class='session'>
+            
         </form>
 
     </section>
@@ -55,7 +48,7 @@
             
                 <p name='product1' id='product1' class='product-name'>In Case of Fire </p>
                 <p class='product-price' ><span id='product-price1'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product1'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product1'></span></p>
             <button class='btn' id='btnproduct1'>Añadir al carrito</button>
         </div>
 
@@ -65,7 +58,7 @@
             
                 <p name='product2' id='product2' class='product-name'>Debugging </p>
                 <p class='product-price' ><span id='product-price2'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product2'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product2'></span></p>
             <button class='btn' id='btnproduct2'>Añadir al carrito</button>
         </div>
         
@@ -75,7 +68,7 @@
             
                 <p name='product3' id='product3' class='product-name'>It Works </p>
                 <p class='product-price' ><span id='product-price3'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product3'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product3'></span></p>
             <button class='btn' id='btnproduct3'>Añadir al carrito</button>
         </div>
 
@@ -85,7 +78,7 @@
             
                 <p name='product4' id='product4' class='product-name'>Github </p>
                 <p class='product-price' ><span id='product-price4'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product4'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product4'></span></p>
             <button class='btn' id='btnproduct4'>Añadir al carrito</button>
         </div>
     
@@ -95,7 +88,7 @@
             
                 <p name='product5' id='product5' class='product-name'>Señor Developer </p>
                 <p class='product-price' ><span id='product-price5'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product5'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product5'></span></p>
             <button class='btn' id='btnproduct5'>Añadir al carrito</button>
         </div>
         
@@ -104,7 +97,7 @@
             
                 <p name='product6' id='product6' class='product-name'>Clean Code</p>
                 <p class='product-price' ><span id='product-price6'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product6'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product6'></span></p>
             <button class='btn' id='btnproduct6'>Añadir al carrito</button>
         </div>
         
@@ -113,7 +106,7 @@
             
                 <p name='product7' id='product7' class='product-name'>Home </p>
                 <p class='product-price' ><span id='product-price7'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product7'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product7'></span></p>
             <button class='btn' id='btnproduct7'>Añadir al carrito</button>
         </div>
 
@@ -122,7 +115,7 @@
             
                 <p name='product8' id='product8' class='product-name'>It's True </p>
                 <p class='product-price' ><span id='product-price8'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product8'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product8'></span></p>
             <button class='btn' id='btnproduct8'>Añadir al carrito</button>
         </div>
 
@@ -131,7 +124,7 @@
             
                 <p name='product1' id='product9' class='product-name'>Feature </p>
                 <p class='product-price' ><span id='product-price9'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product9'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product9'></span></p>
             <button class='btn' id='btnproduct9'>Añadir al carrito</button>
         </div>
 
@@ -141,7 +134,7 @@
             
                 <p name='product10' id='product10' class='product-name'>Linux </p>
                 <p class='product-price' ><span id='product-price10'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product10'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product10'></span></p>
             <button class='btn' id='btnproduct10'>Añadir al carrito</button>
         </div>
 
@@ -151,7 +144,7 @@
             
                 <p name='product1' id='product11' class='product-name'>Git out </p>
                 <p class='product-price' ><span id='product-price11'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product11'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product11'></span></p>
             <button class='btn' id='btnproduct11'>Añadir al carrito</button>
         </div>
 
@@ -160,7 +153,7 @@
             
                 <p name='product12' id='product12' class='product-name'>Full-Snack Developer </p>
                 <p class='product-price' ><span id='product-price12'>1599</span> clp</p>
-            <p class='stock-product'>Existencias en stock:<span id='stock-product12'></span></p>
+            <p class='stock-product'>Existencias en stock: <span id='stock-product12'></span></p>
             <button class='btn' id='btnproduct12'>Añadir al carrito</button>
         </div>
 
