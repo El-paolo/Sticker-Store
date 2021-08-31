@@ -1,24 +1,22 @@
 
- 
-
-
+ const session = [false];
 //set stock
 
-function setStock(stock){ 
-    function countProducts(){
-        const products = document.querySelectorAll('.product-name');
-        const allProducts = products.length;
-        console.log(allProducts);
-        return products;
-    }    
-    countProducts().forEach((value, i)=>{ 
-        console.log(`stock-product${i+1}`)
-        const setStock = document.getElementById(`stock-product${i+1}`);
-        setStock.innerHTML = stock;
-    });
-}
+// function setStock(stock){ 
+//     function countProducts(){
+//         const products = document.querySelectorAll('.product-name');
+//         const allProducts = products.length;
+//         console.log(allProducts);
+//         return products;
+//     }    
+//     countProducts().forEach((value, i)=>{ 
+//         console.log(`stock-product${i+1}`)
+//         const setStock = document.getElementById(`stock-product${i+1}`);
+//         setStock.innerHTML = stock;
+//     });
+// }
 
-setStock(5); //aquí se define el stock por defecto en este caso 5
+//setStock(5); //aquí se define el stock por defecto en este caso 5
 
 
 //revisar a la hora de introducir las verificiciones
@@ -109,24 +107,66 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
         [user, ['required', 'user']],
         [password, ['required', 'password']]
         ]
+        
+      console.log(!session[0]);  
+      if(!session[0]){
         const areValids =[];
         formData.forEach(el => {
             
           const {isValid} = inputValueValidation(el[0], el[1]);
           areValids.push(isValid);
- 
+
         });
         
         console.log(areValids[0], areValids[1])
         if(areValids[1] && areValids[0]){
             const welcome = document.getElementById('welcome');
-            welcome.innerHTML = `Bienvenido ${user.value}`
+            welcome.innerHTML = `Bienvenido ${user.value}`;
+            session.shift()
+            session.push(true)
+            console.trace(session);
+            
+            
      };
+     }else if(session[0]){
+      const initiated = document.getElementById('initiated');
+      initiated.innerHTML = `<h2  class='slogan welcome red'>La sesión ya esta iniciada</h2>`;
+      setTimeout(() => {
+        removeElementsByClass('red')},5000);
+      
 
-     }
+    }
+     };
 
 function removeElementsByClass(className){
   const elements = document.getElementsByClassName(className);
   while(elements.length > 0){
     elements[0].parentNode.removeChild(elements[0]);
 }};
+
+
+function countProducts(){
+  const getProducts = document.getElementsByClassName('sticker-container'); //funciona
+  //console.trace(getProducts.length);
+  const products = [];
+  for(let i = 1; i <=getProducts.length; i++  ){
+    products.push(i);
+  }
+  //console.log(products);
+  //console.trace(products.length);
+  return  products; 
+};
+countProducts();
+
+class Product {
+  constructor(number, name, price, stock, btn){
+    this.number = number;
+    this.name = name;
+    this.price = price;
+    this.stock = stock;
+    this.btn = btn;
+  }
+    
+};
+
+const cart = [];

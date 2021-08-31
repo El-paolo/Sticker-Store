@@ -161,6 +161,10 @@ li{
     color:var(--white);
 }
 
+.red{
+    color:red;
+}
+
 /*Main Section*/
 
 .main{
