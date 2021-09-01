@@ -121,16 +121,30 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
         console.log(areValids[0], areValids[1])
         if(areValids[1] && areValids[0]){
             const welcome = document.getElementById('welcome');
+            const form = document.getElementById('session');
             welcome.innerHTML = `Bienvenido ${user.value}`;
             session.shift()
             session.push(true)
             console.trace(session);
+            removeElementsByClass('btn-user');
+            form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
+            const btn = document.getElementById('close-session');
+            btn.addEventListener('click',function(e){location.reload(e)});
+
             
             
      };
      }else if(session[0]){
       const initiated = document.getElementById('initiated');
+      const form = document.getElementById('session');
       initiated.innerHTML = `<h2  class='slogan welcome red'>La sesión ya esta iniciada</h2>`;
+      removeElementsByClass('btn-user');
+      form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
+      const btn = document.getElementById('close-session');
+      btn.addEventListener('click',function(e){location.reload(e)});
+
+
+
       setTimeout(() => {
         removeElementsByClass('red')},5000);
       
