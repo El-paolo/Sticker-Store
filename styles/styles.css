@@ -207,7 +207,13 @@ li{
     margin-left:0 ;
 }
 
-
+.add-n-to-cart{
+    font-size:2rem;
+    text-align:center;
+    background-color:var(--white);
+    font-family: var(--principalFont);
+    border-radius: 0.5rem;
+}
 
 
 

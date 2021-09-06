@@ -1,5 +1,9 @@
+let alreadySetted;
+let intact; 
+const session = [false];
+const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
+const stockIntact = localStorage.getItem(intact) ?? true;
 
- const session = [false];
 //set stock
 
 // function setStock(stock){ 
@@ -18,8 +22,61 @@
 
 //setStock(5); //aquí se define el stock por defecto en este caso 5
 
+//Esta funcion crea funcionalidad a los botones
+
+
 
 //revisar a la hora de introducir las verificiciones
+function setStock(stock,product){
+   
+  const showStock =  document.getElementById(`stock-product${product}`);
+  showStock.innerHTML = `${stock}`;
+  //console.log(stock, product)
+ }
+
+ function initStock(stock){
+  
+  console.log(stockSetted, stockIntact) //si el stock no se ha seteado y no se ha tocado(intact cambia a false cuando se agrgue algo al carro)
+  if(!stockSetted && stockIntact){
+    countProducts().forEach((value, i) => {
+      console.log(`stock-product${i+1}`)
+      setStock(stock, i+1);
+      
+    });
+    let stockIntact = true;
+    let stockSetted = true;
+    localStorage.setItem(stockSetted, stockIntact);
+
+    
+  }else if(stockSetted && !intact){
+    //rellenar con lo que se va a guardar en el arreglo del cart dentro del local storage 
+  }
+
+}
+
+// function initStock(setted = false, stock){
+//   console.log(setted)
+//   if(!setted){
+//     const {products} = countProducts();
+//     products.forEach((value, i) =>{
+//       setStock(stock, i+1)
+      
+//     });
+    
+//     stockSetted.push(true);
+//     const stockset = localStorage.setItem(stockSetted[0]);
+    
+//   }
+
+//   return stockSetted[0];
+  
+// }
+
+
+
+
+
+
 
 const initSession = document.getElementById('init-show');
 initSession.addEventListener('click', function(){
@@ -170,7 +227,7 @@ function countProducts(){
   //console.trace(products.length);
   return  products; 
 };
-countProducts();
+countProducts(); //cuenta los productos
 
 class Product {
   constructor(number, name, price, stock, btn){
@@ -184,3 +241,4 @@ class Product {
 };
 
 const cart = [];
+initStock(5);
