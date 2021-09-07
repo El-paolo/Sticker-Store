@@ -5,7 +5,7 @@ const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
 const stockIntact = localStorage.getItem(intact) ?? true;
 
 class Product {
-  constructor(id, name, price, stock, btn, quantity=1){
+  constructor(id, name, price, stock, btn, quantity){
     this.id = id;
     this.name = name;
     this.price = price;
@@ -123,14 +123,41 @@ function setStock(stock,product){
 let btns = []
 let products = []
 
+/////////creamos lo botones y su funcion que devuelve la cantidad y 
+for(let i = 1; i<= countProducts().length; i++){
+  let btn = document.getElementById(`btnproduct${i}`);
+  
+  btn.addEventListener('click',e =>{
+    e.preventDefault();
+    returnBtn(i);
+  });
+
+}
+
+function returnBtn(i){
+  const numBtn = i;
+  let save=[]
+  if(document.getElementById(`add-n-products${i}`).value == ''){
+    save.push(1);
+  }else{
+    save.push(document.getElementById(`add-n-products${i}`).value);
+  }
+  
+  let quantity = save[0] 
+  console.log(numBtn, quantity);
+  return {numBtn, quantity};
+}
+/////////////////////////////////////////////////////
+
 window.addEventListener('DOMContentLoaded', e =>{
   for(let i = 1; i <= countProducts().length; i++){
   
     let name = document.getElementById(`product${i}`).innerHTML;
     let price = document.getElementById(`product-price${i}`).innerHTML;
     let stock = document.getElementById(`stock-product${i}`).innerHTML;
-    let quantity = document.getElementById(``)
+    //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
     let btn = document.getElementById(`btnproduct${i}`);
+    
     const product = new Product(i, name, price, stock, btn)
     console.log(product);
     
