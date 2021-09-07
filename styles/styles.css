@@ -216,6 +216,17 @@ li{
 }
 
 
+.special-btn{
+    border-radius:0.5rem;
+    background-color:var(--white);
+    cursor: pointer;
+    padding:.5rem 0;
+    width: 80%;
+    font-family: var(--principalFont);
+    font-size: 2rem;
+    margin: 1rem;
+
+}
 
 .btn{
     border-radius:0.5rem;

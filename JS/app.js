@@ -4,6 +4,22 @@ const session = [false];
 const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
 const stockIntact = localStorage.getItem(intact) ?? true;
 
+class Product {
+  constructor(id, name, price, stock, btn, quantity=1){
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.stock = stock;
+    this.btn = btn;
+    this.quantity = quantity;
+
+    function productData(){
+      console.log(id, name, price, stock, btn, quantity);
+      
+    }
+  }
+    
+};
 //set stock
 
 // function setStock(stock){ 
@@ -43,16 +59,17 @@ function setStock(stock,product){
       setStock(stock, i+1);
       
     });
-    let stockIntact = true;
-    let stockSetted = true;
-    localStorage.setItem(stockSetted, stockIntact);
+    
+    localStorage.stockIntact = true;
+    localStorage.stockSetted = true;
 
     
   }else if(stockSetted && !intact){
     //rellenar con lo que se va a guardar en el arreglo del cart dentro del local storage 
   }
 
-}
+}initStock(5);;
+
 
 // function initStock(setted = false, stock){
 //   console.log(setted)
@@ -77,6 +94,49 @@ function setStock(stock,product){
 
 
 
+// const name = document.getElementById(`product${i}`);
+//     const price = document.getElementById(`product-price${i}`);
+//     const stock = document.getElementById(`stock-product${i}`);
+//     const quantity = document.getElementById(`add-n-products${i}`);
+//     console.log(name.value, quantity.value, price.value);
+    
+//     const product = new Product(i, name.value, price.value, stock.value, `btn${i}`, quantity.value ?? 1);
+//     console.log(e, product)
+
+
+
+//Creamos la funcion de seleccionar el btn para agregar al carro 
+// for(let i = 1; i <= countProducts().length; i++){
+//   //let price = document.getElementById(`product-price${i}`);
+//   //let stock = 
+//   //= new Product(i, `product${i}`, price.value,   ){
+//   let btn = document.getElementById(`btnproduct${i}`);
+//   btn.addEventListener('click', e =>{
+//     e.preventDefault();
+//     console.log(e);
+    
+    
+//   } )
+//   btns.push(btn);
+// }
+
+let btns = []
+let products = []
+
+window.addEventListener('DOMContentLoaded', e =>{
+  for(let i = 1; i <= countProducts().length; i++){
+  
+    let name = document.getElementById(`product${i}`).innerHTML;
+    let price = document.getElementById(`product-price${i}`).innerHTML;
+    let stock = document.getElementById(`stock-product${i}`).innerHTML;
+    let quantity = document.getElementById(``)
+    let btn = document.getElementById(`btnproduct${i}`);
+    const product = new Product(i, name, price, stock, btn)
+    console.log(product);
+    
+    products.push(product);
+  }
+})
 
 const initSession = document.getElementById('init-show');
 initSession.addEventListener('click', function(){
@@ -90,7 +150,7 @@ initSession.addEventListener('click', function(){
         <input type="password" id='password'>
 
     <div class='btn-user'>
-        <button id='session-button' class='btn'>Enviar</button>
+        <button id='session-button' class='special-btn'>Enviar</button>
     </div>`
     function callBtn(){
         const sessionBtn = document.getElementById('session-button');
@@ -198,7 +258,7 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
       removeElementsByClass('btn-user');
       form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
       const btn = document.getElementById('close-session');
-      btn.addEventListener('click',function(e){location.reload(e)});
+      btn.addEventListener('click',e => location.reload(e));
 
 
 
@@ -229,16 +289,8 @@ function countProducts(){
 };
 countProducts(); //cuenta los productos
 
-class Product {
-  constructor(number, name, price, stock, btn){
-    this.number = number;
-    this.name = name;
-    this.price = price;
-    this.stock = stock;
-    this.btn = btn;
-  }
-    
-};
 
-const cart = [];
-initStock(5);
+
+
+
+
