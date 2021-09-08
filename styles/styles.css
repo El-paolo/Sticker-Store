@@ -186,6 +186,12 @@ li{
     align-items: center;
 }
 
+.error-init-stock{
+    font-family:var(--principalFont);
+    color:red;
+    background-color:var(--white);
+    padding: 0 5rem;
+}
 
 .stock-product{
     font-family: var(--principalFont);

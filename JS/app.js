@@ -3,7 +3,7 @@ let intact;
 const session = [false];
 const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
 const stockIntact = localStorage.getItem(intact) ?? true;
-
+let save =[];
 class Product {
   constructor(id, name, price, stock, btn, quantity){
     this.id = id;
@@ -20,6 +20,22 @@ class Product {
   }
     
 };
+
+function countProducts(){
+  const getProducts = document.getElementsByClassName('sticker-container'); //funciona
+  //console.trace(getProducts.length);
+  const products = [];
+  for(let i = 1; i <=getProducts.length; i++  ){
+    products.push(i);
+  }
+  //console.log(products);
+  //console.trace(products.length);
+  return  products; 
+};
+countProducts(); //cuenta los productos
+
+
+
 //set stock
 
 // function setStock(stock){ 
@@ -126,29 +142,55 @@ let products = []
 /////////creamos lo botones y su funcion que devuelve la cantidad y 
 for(let i = 1; i<= countProducts().length; i++){
   let btn = document.getElementById(`btnproduct${i}`);
-  
+  btns.push(btn)
   btn.addEventListener('click',e =>{
     e.preventDefault();
-    returnBtn(i);
+    let {save} =returnBtn(i);
+    let {initiated} = reviewSession(save[0]);
+    
   });
 
 }
 
+//funcion que revisa si se inició sesion
+
+function reviewSession(product){
+  if(session[0]){
+    let initiated = session[0];
+  }else{
+    const initated = session[0];
+    const errors = document.querySelectorAll('.error-init-stock');
+    const pTag = errors[product-1];
+    pTag.innerHTML = 'Debes Iniciar Sesion';
+    pTag.removeAttribute('hidden');
+    setTimeout(() => {
+      pTag.innerHTML='';
+      pTag.setAttribute('hidden', true);
+
+    }, 2000);
+    
+
+  }
+
+  return{initiated}
+}
+
+///////////////////////////////////////////
+
+
 function returnBtn(i){
+  let save = [];
   const numBtn = i;
-  let save=[]
+  save.push(numBtn); //save[0] = numBtn, save[1]= quantity
+  
   if(document.getElementById(`add-n-products${i}`).value == ''){
     save.push(1);
   }else{
-    save.push(document.getElementById(`add-n-products${i}`).value);
+    save.push(parseInt(document.getElementById(`add-n-products${i}`).value));
   }
-  
-  let quantity = save[0] 
-  console.log(numBtn, quantity);
-  return {numBtn, quantity};
+  return {save};
 }
 /////////////////////////////////////////////////////
-
 window.addEventListener('DOMContentLoaded', e =>{
   for(let i = 1; i <= countProducts().length; i++){
   
@@ -164,6 +206,8 @@ window.addEventListener('DOMContentLoaded', e =>{
     products.push(product);
   }
 })
+
+
 
 const initSession = document.getElementById('init-show');
 initSession.addEventListener('click', function(){
@@ -302,19 +346,6 @@ function removeElementsByClass(className){
     elements[0].parentNode.removeChild(elements[0]);
 }};
 
-
-function countProducts(){
-  const getProducts = document.getElementsByClassName('sticker-container'); //funciona
-  //console.trace(getProducts.length);
-  const products = [];
-  for(let i = 1; i <=getProducts.length; i++  ){
-    products.push(i);
-  }
-  //console.log(products);
-  //console.trace(products.length);
-  return  products; 
-};
-countProducts(); //cuenta los productos
 
 
 
