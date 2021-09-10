@@ -186,6 +186,8 @@ li{
     align-items: center;
 }
 
+
+
 .error-init-stock{
     font-family:var(--principalFont);
     color:red;
@@ -193,7 +195,7 @@ li{
     padding: 0 5rem;
 }
 
-.stock-product{
+.stock-product, .quantity{
     font-family: var(--principalFont);
     margin: 0;
 }

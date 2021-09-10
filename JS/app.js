@@ -1,9 +1,17 @@
-let alreadySetted;
-let intact; 
 const session = [false];
-const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
-const stockIntact = localStorage.getItem(intact) ?? true;
-let save =[];
+
+//const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
+ 
+let cart =[]; //carro que 
+let intact;
+
+let alreadySetted;
+let stringStock;
+const stockIntact = localStorage.getItem('intact') ?? false; //me dice si ya se compró algún producto
+let stockSetted = localStorage.getItem('alreadySetted') ?? false; // me dice si ya se seteó el arreglo con el stock
+let stockProducts = localStorage.getItem('stringStock') ?? false; //revisa si ya se seteo el stock y trae el arreglo con los productos,este es para actualizar
+
+//falta crear funcion que coloque los elementos del carro
 class Product {
   constructor(id, name, price, stock, btn, quantity){
     this.id = id;
@@ -19,7 +27,16 @@ class Product {
     }
   }
     
-};
+}
+
+class StockProduct{
+  constructor(id, stock){
+    this.id = id;
+    this.stock= stock;
+  }
+}
+
+
 
 function countProducts(){
   const getProducts = document.getElementsByClassName('sticker-container'); //funciona
@@ -31,60 +48,76 @@ function countProducts(){
   //console.log(products);
   //console.trace(products.length);
   return  products; 
-};
+}
 countProducts(); //cuenta los productos
 
+async function showStock(){
+    
+  try{let stock = await JSON.parse(localStorage.getItem('stringStock'));  
+    stock.forEach((value, i)=>{
+    console.log(i+1, value.id);
+    let stockTag = document.getElementById(`stock-product${i+1}`);
+    stockTag.innerHTML =`${value.stock}`; 
+  });
+    }catch(error){
 
-
-//set stock
-
-// function setStock(stock){ 
-//     function countProducts(){
-//         const products = document.querySelectorAll('.product-name');
-//         const allProducts = products.length;
-//         console.log(allProducts);
-//         return products;
-//     }    
-//     countProducts().forEach((value, i)=>{ 
-//         console.log(`stock-product${i+1}`)
-//         const setStock = document.getElementById(`stock-product${i+1}`);
-//         setStock.innerHTML = stock;
-//     });
-// }
-
-//setStock(5); //aquí se define el stock por defecto en este caso 5
-
-//Esta funcion crea funcionalidad a los botones
-
-
-
-//revisar a la hora de introducir las verificiciones
-function setStock(stock,product){
-   
-  const showStock =  document.getElementById(`stock-product${product}`);
-  showStock.innerHTML = `${stock}`;
-  //console.log(stock, product)
- }
-
- function initStock(stock){
+    }finally{
+        
+    }
   
-  console.log(stockSetted, stockIntact) //si el stock no se ha seteado y no se ha tocado(intact cambia a false cuando se agrgue algo al carro)
-  if(!stockSetted && stockIntact){
-    countProducts().forEach((value, i) => {
-      console.log(`stock-product${i+1}`)
-      setStock(stock, i+1);
-      
-    });
-    
-    localStorage.stockIntact = true;
-    localStorage.stockSetted = true;
+    }
 
-    
-  }else if(stockSetted && !intact){
-    //rellenar con lo que se va a guardar en el arreglo del cart dentro del local storage 
-  }
 
-}initStock(5);;
+async function setDefaultStock(isThereStock, stockToSet){
+  if(!isThereStock){
+    let stockProducts= [];
+    for(let i = 1; i <=countProducts().length; i++){
+      const product = new StockProduct(i, stockToSet);
+      stockProducts.push(product);
+
+
+    }
+    localStorage.setItem('stringStock', JSON.stringify(stockProducts));
+    await showStock();
+    console.log(2);
+    
+    
+  }else{
+    
+    await showStock();
+    console.log(1);
+  
+    }
+    
+  
+}
+
+setDefaultStock(stockProducts, 5); //aquí se setea el stock por default de manera manual o se muestra el stock ya disponible
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // function initStock(setted = false, stock){
@@ -136,21 +169,25 @@ function setStock(stock,product){
 //   btns.push(btn);
 // }
 
-let btns = []
-let products = []
+let btns = [];
+let products = [];
 
 /////////creamos lo botones y su funcion que devuelve la cantidad y 
 for(let i = 1; i<= countProducts().length; i++){
   let btn = document.getElementById(`btnproduct${i}`);
-  btns.push(btn)
+  btns.push(btn);
   btn.addEventListener('click',e =>{
     e.preventDefault();
     let {save} =returnBtn(i);
     let {initiated} = reviewSession(save[0]);
+    let {stockProducts} = setStock(initiated, productsStock, 5 ); //aquí se determina el stock por defecto de manera manual en el tercer parámetro
+
     
   });
 
 }
+
+
 
 //funcion que revisa si se inició sesion
 
@@ -172,7 +209,7 @@ function reviewSession(product){
 
   }
 
-  return{initiated}
+  return initiated;
 }
 
 ///////////////////////////////////////////
@@ -195,18 +232,19 @@ window.addEventListener('DOMContentLoaded', e =>{
   for(let i = 1; i <= countProducts().length; i++){
   
     let name = document.getElementById(`product${i}`).innerHTML;
-    let price = document.getElementById(`product-price${i}`).innerHTML;
-    let stock = document.getElementById(`stock-product${i}`).innerHTML;
+    let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
+    let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
     //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
     let btn = document.getElementById(`btnproduct${i}`);
     
-    const product = new Product(i, name, price, stock, btn)
-    console.log(product);
+    const product = new Product(i, name, price, stock, btn);
+    //console.log(product);
+    
     
     products.push(product);
   }
-})
-
+});
+//console.log(products);
 
 
 const initSession = document.getElementById('init-show');
@@ -222,7 +260,7 @@ initSession.addEventListener('click', function(){
 
     <div class='btn-user'>
         <button id='session-button' class='special-btn'>Enviar</button>
-    </div>`
+    </div>`;
     function callBtn(){
         const sessionBtn = document.getElementById('session-button');
         
@@ -237,7 +275,7 @@ initSession.addEventListener('click', function(){
 
 function inputValueValidation(input, validations = []) { //cada cosa que se queira validar cae en un case dependiendo de cual sea
     const { value } = input;
-    let isValid = true
+    let isValid = true;
     let showError = document.getElementById('error-user');
     validations.forEach(validation => {
       switch (validation) {
@@ -247,7 +285,7 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
             error = 'Todos los campos requeridos';
             console.log(input);
             let showError = document.getElementById('error-user');
-            showError.innerHTML =  `<p class='error-text' >${error}</p>`
+            showError.innerHTML =  `<p class='error-text' >${error}</p>`;
             setTimeout(() => {
               removeElementsByClass('error-text');
             }, 5000);
@@ -274,7 +312,7 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
             error = `Contraseña incorrecta`;
             console.log(input);
             let showError = document.getElementById('error-password');
-            showError.innerHTML = `<p class='error-text' >${error}</p>`
+            showError.innerHTML = `<p class='error-text' >${error}</p>`;
             setTimeout(() => {
               removeElementsByClass('error-text');
             }, 5000);
@@ -284,7 +322,7 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
     });
     
     return { isValid, showError};
-  };
+  }
 
 
      function onSubmit(e) { 
@@ -294,7 +332,7 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
         const formData =  [
         [user, ['required', 'user']],
         [password, ['required', 'password']]
-        ]
+        ];
         
       console.log(!session[0]);  
       if(!session[0]){
@@ -306,22 +344,22 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
 
         });
         
-        console.log(areValids[0], areValids[1])
+        console.log(areValids[0], areValids[1]);
         if(areValids[1] && areValids[0]){
             const welcome = document.getElementById('welcome');
             const form = document.getElementById('session');
             welcome.innerHTML = `Bienvenido ${user.value}`;
-            session.shift()
-            session.push(true)
+            session.shift();
+            session.push(true);
             console.trace(session);
             removeElementsByClass('btn-user');
             form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
             const btn = document.getElementById('close-session');
-            btn.addEventListener('click',function(e){location.reload(e)});
+            btn.addEventListener('click',function(e){location.reload(e);});
 
             
             
-     };
+     }
      }else if(session[0]){
       const initiated = document.getElementById('initiated');
       const form = document.getElementById('session');
@@ -334,17 +372,17 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
 
 
       setTimeout(() => {
-        removeElementsByClass('red')},5000);
+        removeElementsByClass('red');},5000);
       
 
     }
-     };
+     }
 
 function removeElementsByClass(className){
   const elements = document.getElementsByClassName(className);
   while(elements.length > 0){
     elements[0].parentNode.removeChild(elements[0]);
-}};
+}}
 
 
 
