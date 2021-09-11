@@ -1,8 +1,7 @@
 const session = [false];
 
 //const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
- 
-let cart =[]; //carro que 
+
 let intact;
 
 let alreadySetted;
@@ -10,19 +9,18 @@ let stringStock;
 const stockIntact = localStorage.getItem('intact') ?? false; //me dice si ya se compró algún producto
 let stockSetted = localStorage.getItem('alreadySetted') ?? false; // me dice si ya se seteó el arreglo con el stock
 let stockProducts = localStorage.getItem('stringStock') ?? false; //revisa si ya se seteo el stock y trae el arreglo con los productos,este es para actualizar
-
+let stringCart = localStorage.getItem('stringCart') ?? false;
 //falta crear funcion que coloque los elementos del carro
 class Product {
-  constructor(id, name, price, stock, btn, quantity){
+  constructor(id, name, price, btn, quantity){
     this.id = id;
     this.name = name;
     this.price = price;
-    this.stock = stock;
     this.btn = btn;
-    this.quantity = quantity;
+    this.quantity = 1;
 
     function productData(){
-      console.log(id, name, price, stock, btn, quantity);
+      console.log(id, name, price, btn, quantity);
       
     }
   }
@@ -67,7 +65,7 @@ async function showStock(){
   
     }
 
-
+//hace carro de la misma manera
 async function setDefaultStock(isThereStock, stockToSet){
   if(!isThereStock){
     let stockProducts= [];
@@ -79,30 +77,80 @@ async function setDefaultStock(isThereStock, stockToSet){
     }
     localStorage.setItem('stringStock', JSON.stringify(stockProducts));
     await showStock();
-    console.log(2);
+    //console.log(2);
     
     
   }else{
     
     await showStock();
-    console.log(1);
+    //console.log(1);
   
     }
     
   
 }
+// function createCart(){
+//   let stringCart = localStorage.getItem('stringCart') ?? false;
+  
+//   if(stringCart == false){
+//     let stringCart = [];
+//     localStorage.setItem('stringCart', JSON.stringify(stringCart));
+//     console.log(1);
+//   }else{
+//     console.log(2);
+
+//funciona perfecto
+function createCart(isThereACart){
+  if(!isThereACart){
+    let initCart= [];
+    localStorage.setItem('stringCart', JSON.stringify(initCart));
+    //await shoCart(cart);
+    //console.log(23);
+    }
+  }
+
+
 
 setDefaultStock(stockProducts, 5); //aquí se setea el stock por default de manera manual o se muestra el stock ya disponible
+createCart(stringCart);
 
 
 
+async function addToCart(session, save){
+    if(session){
+      try{
+        
+        let cart = await JSON.parse(localStorage.getItem('stringCart'));
+        
+        let product = products.filter(products => products.id == save[0] ); //buscamos en products el producto seleccionado por id
+        product[0].quantity = save[1]; //agregamos el valor de la cantidad al producto
+        cart.push(product[0]); //lo metemos al carro
+        console.log(cart);
+        
+        let totalProducts = cart.filter(products=> products.id == save[0] ); // me devuelve los productos en el carro del id ==save[0]
+        let totalQuantity =  totalProducts.reduce( (total, product) => total + product.quantity, 0 ); //cuanto es el total de la suma de las cantidades que hay en el carro
+        let stockProducts =  JSON.parse(localStorage.getItem('stringStock'));
+        
+        localStorage.setItem('stringCart', JSON.stringify(cart));
+        console.trace(JSON.parse(localStorage.getItem('stringCart')));
+        console.log('added');
+        
+        
+        if(totalQuantity > stockProducts[save[0] - 1].stock  ){
+        //scar el objeto del arreglo de string cart, está en el local storage
+        console.log(cart);
+        
+        console.log('too much');
+        
+      }}catch(err){
 
+      }
+    }
 
-
+}
 
 
  
-
 
 
 
@@ -172,17 +220,48 @@ setDefaultStock(stockProducts, 5); //aquí se setea el stock por default de mane
 let btns = [];
 let products = [];
 
+// function addToCart(initiated, save, cart){ //aqui va sesssion[0]
+  
+//   if(initiated){
+    
+     
+//     console.log(session);
+//     let product = products.filter(products => products.id == save[0] );
+//     product.quantity = save[1];
+//     let addTocart =  cart.push(product);
+//     let totalProducts =  cart.filter(products=> products.id == save[0] ); // me devuelve los productos en el carro del id ==save[0]
+//     let totalQuantity = totalProducts.reduce( (total, product) => total + product.quantity, 0 ); 
+//     let stockProducts =  JSON.parse(localStorage.getItem('stringStock'));
+//     localStorage.setItem('stringCart', cart);
+//     console.log(cart);
+    
+//     if(totalQuantity > stockProducts[save[0] - 1].stock  ){
+//       console.log('to much');
+//     }
+    
+// }
+// }
+
+
+
+
+
+
+
+
+
 /////////creamos lo botones y su funcion que devuelve la cantidad y 
 for(let i = 1; i<= countProducts().length; i++){
   let btn = document.getElementById(`btnproduct${i}`);
   btns.push(btn);
-  btn.addEventListener('click',e =>{
+  btn.addEventListener('click',async e =>{
     e.preventDefault();
     let {save} =returnBtn(i);
-    let {initiated} = reviewSession(save[0]);
-    let {stockProducts} = setStock(initiated, productsStock, 5 ); //aquí se determina el stock por defecto de manera manual en el tercer parámetro
-
-    
+    reviewSession(save[0]);
+    addToCart(session[0], save);
+    //addToCart(session[0], save, cart);
+      
+    //let {stockProducts} = show(initiated, productsStock, 5 ); //aquí se determina el stock por defecto de manera manual en el tercer parámetro
   });
 
 }
@@ -192,10 +271,7 @@ for(let i = 1; i<= countProducts().length; i++){
 //funcion que revisa si se inició sesion
 
 function reviewSession(product){
-  if(session[0]){
-    let initiated = session[0];
-  }else{
-    const initated = session[0];
+  if(!session[0]){
     const errors = document.querySelectorAll('.error-init-stock');
     const pTag = errors[product-1];
     pTag.innerHTML = 'Debes Iniciar Sesion';
@@ -205,11 +281,9 @@ function reviewSession(product){
       pTag.setAttribute('hidden', true);
 
     }, 2000);
-    
-
   }
 
-  return initiated;
+  
 }
 
 ///////////////////////////////////////////
@@ -386,6 +460,7 @@ function removeElementsByClass(className){
 
 
 
+//funcion que consulta el stock si se inició sesión
 
 
 
