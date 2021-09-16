@@ -210,8 +210,8 @@ async function addToCart(session, save){
       }finally{
           let newCart = await JSON.parse(localStorage.getItem('stringCart'));
           await showQuantity(newCart);
-          await showCart();
-          return true;
+          let showCartArray = await showCart();
+          return showCartArray;
        }
     }
 
@@ -250,8 +250,8 @@ async function showCart(){
     localStorage.setItem('stringShowCart', showCartArray);
     console.log(showCartArray);
   }
-
-}catch(err){}
+  return showCartArray;
+}catch(err){console.log(err);}
 
 
 
@@ -259,18 +259,25 @@ async function showCart(){
 }
 
 
-  function getShowCart(showCartArray){
+async function getShowCart(showCartArray){
+  try{
   console.log(showCartArray);
   let shippingPerProduct = showCartArray.length;
-  let totalProducts = showCartArray.reduce((total, product)=> total + product.price*product.quantity , 0); 
+  let totalProducts =  showCartArray.reduce((total, product)=> total + product.price*product.quantity , 0); 
 
   let shippingCost = 1500;
   let totalPrice = shippingPerProduct*350 + totalProducts + shippingCost;
   console.log(totalPrice);
   
   let ulProducts = document.getElementById('ul-cart');
+  let ask = document.getElementsByTagName('li');
+  if(ask != undefined ){
+    removeElementsByClass('product-in-cart');
+    
   showCartArray.forEach(value => {
+    
     let showProduct = document.createElement('LI');
+    showProduct.classList.add('product-in-cart');
     showProduct.innerHTML = `<span class='x'>X</span> ${value.name}<span class='product-checkout'> ${value.price} CLP x ${value.quantity} + 350 CLP   = ${value.price*value.quantity + 350} </span>`;
     ulProducts.appendChild(showProduct);
     let shipping = document.getElementById('shipping');
@@ -280,6 +287,8 @@ async function showCart(){
   
   });
   }
+  }catch(err){console.log(err);}  
+}
 
 
 
@@ -373,7 +382,8 @@ for(let i = 1; i<= countProducts().length; i++){
     e.preventDefault();
     let {save} =returnBtn(i);
     reviewSession(save[0]);
-    let done = addToCart(session[0], save);
+    let showCartArray = await addToCart(session[0], save);
+    getShowCart(showCartArray);
 
       //let showCartArray = 
     //getShowCart(showCartArray);
