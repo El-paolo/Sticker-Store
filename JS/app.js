@@ -292,7 +292,46 @@ async function getShowCart(showCartArray){
 
 
 
+async function isthereCart(){
+    try{let isthereCart = await JSON.parse(localStorage.getItem('stringCart'));
+    if(session[0]){
+      if(isthereCart.length == 0){
 
+      }else{
+        let showCartArray = [];
+  for(let i = 1; i <= countProducts().length; i++){
+    let name = document.getElementById(`product${i}`).innerHTML;
+    let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
+    let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
+    //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
+    let btn = document.getElementById(`btnproduct${i}`);
+    
+    const product = new Product(i, name, price, stock, btn, 1);
+    //console.log(product);
+    products.push(product);
+    
+    let getCart = await JSON.parse(localStorage.getItem('stringCart')); //cambiar esto es el problema
+    let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
+  
+    let productCount = products[i-1];
+    let totalQuantity = productsInCart.reduce((total, product) => total+product.quantity, 0);
+    console.log(productsInCart, totalQuantity, productCount);
+    productCount.quantity = totalQuantity;
+    if(productsInCart.length!= 0){
+    showCartArray.push(productCount);
+    }
+
+    localStorage.setItem('stringShowCart', showCartArray);
+    console.log(showCartArray);
+  }
+      
+  getShowCart(showCartArray);
+
+}
+    }
+  }catch(error){console.log(error);
+  }
+  }
 
 
 // function initStock(setted = false, stock){
@@ -562,6 +601,7 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
               let newCart = JSON.parse(localStorage.getItem('stringCart'));
               showQuantity(newCart);
               showCart();
+              isthereCart();
               
               
               
