@@ -185,7 +185,7 @@ async function addToCart(session, save){
         
         if(totalQuantity > stockProducts[save[0] - 1].stock  ){
         //scar el objeto del arreglo de string cart, está en el local storage
-        //let reviewcart = await JSON.parse(localStorage.getItem('stringCart'));
+        let reviewcart = await JSON.parse(localStorage.getItem('stringCart'));
         cart.pop();
         localStorage.setItem('stringCart', JSON.stringify(cart));
         
@@ -209,7 +209,7 @@ async function addToCart(session, save){
 
       }finally{
           let newCart = await JSON.parse(localStorage.getItem('stringCart'));
-          await  showQuantity(newCart);
+          await showQuantity(newCart);
           return true;
        }
     }
@@ -223,10 +223,7 @@ let results = [];
 
 
 async function showCart(){
-  try{
-    let stringShowCart;
-    let getShowCart = await JSON.parse(localStorage.getItem(stringShowCart)) ?? false;
-  if(!getShowCart){
+  let array = localStorage.getItem('S')
   let showCartArray = [];
   for(let i = 1; i <= countProducts().length; i++){
     let name = document.getElementById(`product${i}`).innerHTML;
@@ -239,7 +236,7 @@ async function showCart(){
     //console.log(product);
     products.push(product);
     
-    let getCart = await JSON.parse(localStorage.getItem('stringCart'));
+    let getCart = JSON.parse(localStorage.getItem('stringCart'));
     let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
   
     let productCount = products[i-1];
@@ -250,50 +247,20 @@ async function showCart(){
     showCartArray.push(productCount);
     }
 
-    localStorage.setItem('stringShowCart', JSON.stringify(showCartArray));
-    return JSON.parse(localStorage.getItem(stringShowCart));
-  }
-}else{
-  let showCartArray = getShowCart.clear(); 
-
-  for(let i = 1; i <= countProducts().length; i++){
-    let name = document.getElementById(`product${i}`).innerHTML;
-    let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
-    let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
-    //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
-    let btn = document.getElementById(`btnproduct${i}`);
-    
-    const product = new Product(i, name, price, stock, btn, 1);
-    //console.log(product);
-    products.push(product);
-    
-    let getCart = await JSON.parse(localStorage.getItem('stringCart'));
-    let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
-  
-    let productCount = products[i-1];
-    let totalQuantity = productsInCart.reduce((total, product) => total+product.quantity, 0);
-    console.log(productsInCart, totalQuantity, productCount);
-    productCount.quantity = totalQuantity;
-    if(productsInCart.length!= 0){
-    showCartArray.push(productCount);
-    }
-    localStorage.setItem('stringShowCart', JSON.stringify(showCartArray));
-    return JSON.parse(localStorage.getItem(stringShowCart));
+    localStorage.setItem('stringShowCart', showCartArray);
 
   }
-}
-  }catch(err){}
-}
+
  
 
 
 
 
+}
 
 
-
-async function getShowCart(showCartArray){
-  try{console.log(showCartArray);
+  function getShowCart(showCartArray){
+  console.log(showCartArray);
   let shippingPerProduct = showCartArray.length;
   let totalProducts = showCartArray.reduce((total, product)=> total + product.price*product.quantity , 0); 
 
@@ -312,9 +279,7 @@ async function getShowCart(showCartArray){
     getShowTotal.innerHTML = `${totalPrice} CLP `;
   
   });
-  
-  }catch(err) {}
-}
+  }
 
 
 
@@ -410,8 +375,8 @@ for(let i = 1; i<= countProducts().length; i++){
     reviewSession(save[0]);
     let done = addToCart(session[0], save);
 
-    let showCartArray = showCart(); 
-    getShowCart(showCartArray);
+      //let showCartArray = 
+    //getShowCart(showCartArray);
     //addToCart(session[0], save, cart);
       
     //let {stockProducts} = show(initiated, productsStock, 5 ); //aquí se determina el stock por defecto de manera manual en el tercer parámetro
