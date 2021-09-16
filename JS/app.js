@@ -26,7 +26,7 @@ class Product {
   }
     
 }
-
+ 
 class StockProduct{
   constructor(id, stock){
     this.id = id;
@@ -210,6 +210,7 @@ async function addToCart(session, save){
       }finally{
           let newCart = await JSON.parse(localStorage.getItem('stringCart'));
           await showQuantity(newCart);
+          await showCart();
           return true;
        }
     }
@@ -223,8 +224,7 @@ let results = [];
 
 
 async function showCart(){
-  let array = localStorage.getItem('S')
-  let showCartArray = [];
+  try{let showCartArray = [];
   for(let i = 1; i <= countProducts().length; i++){
     let name = document.getElementById(`product${i}`).innerHTML;
     let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
@@ -236,7 +236,7 @@ async function showCart(){
     //console.log(product);
     products.push(product);
     
-    let getCart = JSON.parse(localStorage.getItem('stringCart'));
+    let getCart = await JSON.parse(localStorage.getItem('stringCart')); //cambiar esto es el problema
     let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
   
     let productCount = products[i-1];
@@ -248,10 +248,10 @@ async function showCart(){
     }
 
     localStorage.setItem('stringShowCart', showCartArray);
-
+    console.log(showCartArray);
   }
 
- 
+}catch(err){}
 
 
 
