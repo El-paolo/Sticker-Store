@@ -1,15 +1,15 @@
 const session = [false];
 
 //const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
-
+let done = [true];
 let intact;
-
 let alreadySetted;
 let stringStock;
 const stockIntact = localStorage.getItem('intact') ?? false; //me dice si ya se compró algún producto
 let stockSetted = localStorage.getItem('alreadySetted') ?? false; // me dice si ya se seteó el arreglo con el stock
 let stockProducts = localStorage.getItem('stringStock') ?? false; //revisa si ya se seteo el stock y trae el arreglo con los productos,este es para actualizar
 let stringCart = localStorage.getItem('stringCart') ?? false;
+
 //falta crear funcion que coloque los elementos del carro
 class Product {
   constructor(id, name, price, btn, quantity){
@@ -34,6 +34,8 @@ class StockProduct{
   }
 }
 
+let btns = [];
+let products = [];
 
 
 function countProducts(){
@@ -59,8 +61,6 @@ async function showStock(){
   });
     }catch(error){
 
-    }finally{
-        
     }
   
     }
@@ -106,18 +106,66 @@ function createCart(isThereACart){
     localStorage.setItem('stringCart', JSON.stringify(initCart));
     //await shoCart(cart);
     //console.log(23);
+
     }
+  
   }
+//window.addEventListener('DOMContentLoaded',showQuantity(stringCart));
 
-
-
+//quantityInCart(null, true, true);
 setDefaultStock(stockProducts, 5); //aquí se setea el stock por default de manera manual o se muestra el stock ya disponible
 createCart(stringCart);
+
+ async function quantityInCart( option, done, session){//totalQuantity, save, done,
+  let getCart = await JSON.parse(localStorage.getItem('stringCart'));
+  let pTags = document.querySelectorAll('.in-cart');
+  //pTag[save[0]-1].innerHTML = totalQuantity;
+  
+  switch (option){
+    case 'update':
+      
+    
+    
+    break;
+  
+    default:
+      
+
+      products.forEach((value, i) =>{
+        let totalProducts = getCart.filter(products=> products.id == i+1 ); // me devuelve los productos en el carro del id ==save[0]
+        let totalQuantity =  totalProducts.reduce( (total, product) => total + product.quantity, 0 ); //cuanto es el total de la suma de las cantidades que hay en el carro
+        let pTag = pTags[i];
+        pTag.innerHTML=`${totalQuantity}`;
+      });
+    
+    }
+    
+}
+
+
+async function showQuantity(cart){
+    
+  try{
+    let pTags = document.querySelectorAll('.in-cart');
+    products.forEach((value, i) =>{
+      let totalProducts = cart.filter(products=> products.id == i+1 ); // me devuelve los productos en el carro del id ==save[0]
+      let totalQuantity =  totalProducts.reduce( (total, product) => total + product.quantity, 0 ); //cuanto es el total de la suma de las cantidades que hay en el carro
+      let pTag = pTags[i];
+      pTag.innerHTML=`${totalQuantity}`;
+    });
+    }catch(error){
+
+    }
+}
+  
+
+
+
 
 
 
 async function addToCart(session, save){
-    if(session){
+  if(session){
       try{
         
         let cart = await JSON.parse(localStorage.getItem('stringCart'));
@@ -132,24 +180,110 @@ async function addToCart(session, save){
         let stockProducts =  JSON.parse(localStorage.getItem('stringStock'));
         
         localStorage.setItem('stringCart', JSON.stringify(cart));
-        console.trace(JSON.parse(localStorage.getItem('stringCart')));
         console.log('added');
         
         
         if(totalQuantity > stockProducts[save[0] - 1].stock  ){
         //scar el objeto del arreglo de string cart, está en el local storage
-        console.log(cart);
+        //let reviewcart = await JSON.parse(localStorage.getItem('stringCart'));
+        cart.pop();
+        localStorage.setItem('stringCart', JSON.stringify(cart));
         
+        const errors = document.querySelectorAll('.error-init-stock');
+        const pTag = errors[save[0]-1];
+        pTag.innerHTML = 'No Hay Suficiente Stock Disponible';
+        pTag.removeAttribute('hidden');
+        setTimeout(() => {
+          pTag.innerHTML='';
+          pTag.setAttribute('hidden', true);
+
+        }, 2000);
+        
+
         console.log('too much');
         
-      }}catch(err){
-
+        
       }
+      
+    }catch(err){
+
+      }finally{
+          let newCart = await JSON.parse(localStorage.getItem('stringCart'));
+          await  showQuantity(newCart);
+          return true;
+       }
     }
 
 }
 
 
+
+let results = [];
+
+
+
+async function showCart(){
+  try{
+    let stringShowCart;
+    let getShowCart = await JSON.parse(localStorage.getItem(stringShowCart)) ?? false;
+  if(!getShowCart){
+  let showCartArray = [];
+  for(let i = 1; i <= countProducts().length; i++){
+    let name = document.getElementById(`product${i}`).innerHTML;
+    let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
+    let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
+    //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
+    let btn = document.getElementById(`btnproduct${i}`);
+    
+    const product = new Product(i, name, price, stock, btn, 1);
+    //console.log(product);
+    products.push(product);
+    
+    let getCart = await JSON.parse(localStorage.getItem('stringCart'));
+    let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
+  
+    let productCount = products[i-1];
+    let totalQuantity = productsInCart.reduce((total, product) => total+product.quantity, 0);
+    console.log(productsInCart, totalQuantity, productCount);
+    productCount.quantity = totalQuantity;
+    if(productsInCart.length!= 0){
+    showCartArray.push(productCount);
+    }
+
+    localStorage.setItem('stringShowCart', JSON.stringify(showCartArray));
+    return JSON.parse(localStorage.getItem(stringShowCart));
+  }
+}else{
+  let showCartArray = getShowCart.clear(); 
+
+  for(let i = 1; i <= countProducts().length; i++){
+    let name = document.getElementById(`product${i}`).innerHTML;
+    let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
+    let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
+    //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
+    let btn = document.getElementById(`btnproduct${i}`);
+    
+    const product = new Product(i, name, price, stock, btn, 1);
+    //console.log(product);
+    products.push(product);
+    
+    let getCart = await JSON.parse(localStorage.getItem('stringCart'));
+    let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
+  
+    let productCount = products[i-1];
+    let totalQuantity = productsInCart.reduce((total, product) => total+product.quantity, 0);
+    console.log(productsInCart, totalQuantity, productCount);
+    productCount.quantity = totalQuantity;
+    if(productsInCart.length!= 0){
+    showCartArray.push(productCount);
+    }
+    localStorage.setItem('stringShowCart', JSON.stringify(showCartArray));
+    return JSON.parse(localStorage.getItem(stringShowCart));
+
+  }
+}
+  }catch(err){}
+}
  
 
 
@@ -158,10 +292,29 @@ async function addToCart(session, save){
 
 
 
+async function getShowCart(showCartArray){
+  try{console.log(showCartArray);
+  let shippingPerProduct = showCartArray.length;
+  let totalProducts = showCartArray.reduce((total, product)=> total + product.price*product.quantity , 0); 
 
-
-
-
+  let shippingCost = 1500;
+  let totalPrice = shippingPerProduct*350 + totalProducts + shippingCost;
+  console.log(totalPrice);
+  
+  let ulProducts = document.getElementById('ul-cart');
+  showCartArray.forEach(value => {
+    let showProduct = document.createElement('LI');
+    showProduct.innerHTML = `<span class='x'>X</span> ${value.name}<span class='product-checkout'> ${value.price} CLP x ${value.quantity} + 350 CLP   = ${value.price*value.quantity + 350} </span>`;
+    ulProducts.appendChild(showProduct);
+    let shipping = document.getElementById('shipping');
+    shipping.innerHTML = `Envío: ${shippingCost} CLP + 350 CLP por producto`;
+    let getShowTotal = document.getElementById('total-value');
+    getShowTotal.innerHTML = `${totalPrice} CLP `;
+  
+  });
+  
+  }catch(err) {}
+}
 
 
 
@@ -217,8 +370,7 @@ async function addToCart(session, save){
 //   btns.push(btn);
 // }
 
-let btns = [];
-let products = [];
+
 
 // function addToCart(initiated, save, cart){ //aqui va sesssion[0]
   
@@ -248,8 +400,6 @@ let products = [];
 
 
 
-
-
 /////////creamos lo botones y su funcion que devuelve la cantidad y 
 for(let i = 1; i<= countProducts().length; i++){
   let btn = document.getElementById(`btnproduct${i}`);
@@ -258,7 +408,10 @@ for(let i = 1; i<= countProducts().length; i++){
     e.preventDefault();
     let {save} =returnBtn(i);
     reviewSession(save[0]);
-    addToCart(session[0], save);
+    let done = addToCart(session[0], save);
+
+    let showCartArray = showCart(); 
+    getShowCart(showCartArray);
     //addToCart(session[0], save, cart);
       
     //let {stockProducts} = show(initiated, productsStock, 5 ); //aquí se determina el stock por defecto de manera manual en el tercer parámetro
@@ -302,22 +455,22 @@ function returnBtn(i){
   return {save};
 }
 /////////////////////////////////////////////////////
-window.addEventListener('DOMContentLoaded', e =>{
-  for(let i = 1; i <= countProducts().length; i++){
+// window.addEventListener('DOMContentLoaded', e =>{
+//   for(let i = 1; i <= countProducts().length; i++){
   
-    let name = document.getElementById(`product${i}`).innerHTML;
-    let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
-    let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
-    //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
-    let btn = document.getElementById(`btnproduct${i}`);
+//     let name = document.getElementById(`product${i}`).innerHTML;
+//     let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
+//     let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
+//     //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
+//     let btn = document.getElementById(`btnproduct${i}`);
     
-    const product = new Product(i, name, price, stock, btn);
-    //console.log(product);
+//     const product = new Product(i, name, price, stock, btn, 0);
+//     //console.log(product);
     
     
-    products.push(product);
-  }
-});
+//     products.push(product);
+//   }
+// });
 //console.log(products);
 
 
@@ -430,11 +583,14 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
             form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
             const btn = document.getElementById('close-session');
             btn.addEventListener('click',function(e){location.reload(e);});
-
-            
-            
-     }
-     }else if(session[0]){
+            if(session[0]){
+              let newCart = JSON.parse(localStorage.getItem('stringCart'));
+              showQuantity(newCart);
+              showCart();
+              
+              
+              
+    }}}else if(session[0]){
       const initiated = document.getElementById('initiated');
       const form = document.getElementById('session');
       initiated.innerHTML = `<h2  class='slogan welcome red'>La sesión ya esta iniciada</h2>`;
@@ -442,7 +598,7 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
       form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
       const btn = document.getElementById('close-session');
       btn.addEventListener('click',e => location.reload(e));
-
+      
 
 
       setTimeout(() => {
