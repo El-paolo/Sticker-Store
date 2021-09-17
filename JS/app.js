@@ -633,6 +633,9 @@ function removeElementsByClass(className){
 
 //funcion que consulta el stock si se inició sesión
 
+let emptyBttn = document.getElementById('empty-cart');
+function emptyCart(){
 
+}
 
 

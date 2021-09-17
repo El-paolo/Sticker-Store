@@ -296,6 +296,7 @@ li{
     padding-top:2rem ;
     display: flex;
     justify-content: center;
+    column-gap: 2rem;
 }
 
 
@@ -305,6 +306,17 @@ li{
     padding: 0.2rem;
     width:0.3rem;
     height:0.2rem;
+
+}
+.empty-cart{
+    font-family: var(--principalFont);
+    font-size:3rem;
+    width:40%;
+    background-color:red;
+    color:var(--black);
+    padding: 1rem 0;
+    border-radius:0.5rem;
+
 
 }
 .payment-btn{
@@ -319,7 +331,7 @@ li{
 
 } 
 
-.payment-btn:hover{
+.payment-btn:hover, .empty-cart:hover{
     cursor: pointer;
     color:var(--white)
 }
