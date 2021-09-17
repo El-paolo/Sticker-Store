@@ -634,8 +634,24 @@ function removeElementsByClass(className){
 //funcion que consulta el stock si se inició sesión
 
 let emptyBttn = document.getElementById('empty-cart');
-function emptyCart(){
-
+emptyBttn.addEventListener('click', emptyCart);
+async function emptyCart(){
+  try{
+    let stringCart = await JSON.parse(localStorage.getItem('stringCart'));
+    let newArray = [];
+    localStorage.setItem('stringCart', JSON.stringify(newArray));
+    
+    
+  }catch(err){console.log(err);
+  }finally{
+    removeElementsByClass('product-in-cart');
+    let shipping = document.getElementById('shipping');
+    shipping.innerHTML = '';
+    let getShowTotal = document.getElementById('total-value');
+    getShowTotal.innerHTML = '';
+    
+    
+  }
 }
 
 
