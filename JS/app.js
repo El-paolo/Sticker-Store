@@ -278,7 +278,7 @@ async function getShowCart(showCartArray){
     
     let showProduct = document.createElement('LI');
     showProduct.classList.add('product-in-cart');
-    showProduct.innerHTML = `<span class='x'>X</span> ${value.name}<span class='product-checkout'> ${value.price} CLP x ${value.quantity} + 350 CLP   = ${value.price*value.quantity + 350} </span>`;
+    showProduct.innerHTML = `<span class='x'>X</span> ${value.name}<span class='product-checkout'> ${value.price} CLP + 350 CLP c/u  x ${value.quantity} = ${(value.price + 350)*value.quantity} </span>`;
     ulProducts.appendChild(showProduct);
     let shipping = document.getElementById('shipping');
     shipping.innerHTML = `Envío: ${shippingCost} CLP + 350 CLP por producto`;
@@ -602,6 +602,7 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
               showQuantity(newCart);
               showCart();
               isthereCart();
+              emptyBttn.addEventListener('click', emptyCart);
               
               
               
@@ -633,25 +634,42 @@ function removeElementsByClass(className){
 
 //funcion que consulta el stock si se inició sesión
 
-let emptyBttn = document.getElementById('empty-cart');
-emptyBttn.addEventListener('click', emptyCart);
+const emptyBttn = document.getElementById('empty-cart');
+const paymentBttn= document.getElementById('payment-btn');
+
 async function emptyCart(){
   try{
     let stringCart = await JSON.parse(localStorage.getItem('stringCart'));
     let newArray = [];
     localStorage.setItem('stringCart', JSON.stringify(newArray));
-    
-    
-  }catch(err){console.log(err);
-  }finally{
-    removeElementsByClass('product-in-cart');
+    if(session[0]){
+      removeElementsByClass('product-in-cart');
     let shipping = document.getElementById('shipping');
     shipping.innerHTML = '';
     let getShowTotal = document.getElementById('total-value');
     getShowTotal.innerHTML = '';
+    }
+  
+  }catch(err){console.log(err);
+
     
-    
+}}
+
+function errorInit(){
+  if(!session[0]){
+    const getDivError = document.getElementById('error-execute');
+    getDivError.innerHTML = '<h2 class="message">Debes Iniciar Sesión Para Comprar o Vaciar el Carro </h2>';
+    setTimeout(function(){
+      removeElementsByClass('message');
+    }, 3000)
   }
 }
 
+emptyBttn.addEventListener('click', errorInit);
+paymentBttn.addEventListener('click', errorInit);
 
+
+function payment(){
+  let paying = [];
+  
+}
