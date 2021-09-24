@@ -236,7 +236,7 @@ async function showCart(){
     //console.log(product);
     products.push(product);
     
-    let getCart = await JSON.parse(localStorage.getItem('stringCart')); //cambiar esto es el problema
+    let getCart = await JSON.parse(localStorage.getItem('stringCart')); 
     let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
   
     let productCount = products[i-1];
@@ -247,7 +247,7 @@ async function showCart(){
     showCartArray.push(productCount);
     }
 
-    localStorage.setItem('stringShowCart', showCartArray);
+    localStorage.setItem('stringShowCart', JSON.stringify(showCartArray));
     console.log(showCartArray);
   }
   return showCartArray;
@@ -278,7 +278,7 @@ async function getShowCart(showCartArray){
     
     let showProduct = document.createElement('LI');
     showProduct.classList.add('product-in-cart');
-    showProduct.innerHTML = `<span class='x'>X</span> ${value.name}<span class='product-checkout'> ${value.price} CLP + 350 CLP c/u  x ${value.quantity} = ${(value.price + 350)*value.quantity} </span>`;
+    showProduct.innerHTML = `${value.name}<span class='product-checkout'> ${value.price} CLP + 350 CLP c/u  x ${value.quantity} = ${(value.price + 350)*value.quantity} </span>`;
     ulProducts.appendChild(showProduct);
     let shipping = document.getElementById('shipping');
     shipping.innerHTML = `Envío: ${shippingCost} CLP + 350 CLP por producto`;
@@ -311,7 +311,7 @@ async function isthereCart(){
     products.push(product);
     
     let getCart = await JSON.parse(localStorage.getItem('stringCart')); //cambiar esto es el problema
-    let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
+    let productsInCart = getCart.filter( products => products.id == i); //bucamos en el cart cada uno de los productos 
   
     let productCount = products[i-1];
     let totalQuantity = productsInCart.reduce((total, product) => total+product.quantity, 0);
@@ -321,7 +321,7 @@ async function isthereCart(){
     showCartArray.push(productCount);
     }
 
-    localStorage.setItem('stringShowCart', showCartArray);
+    localStorage.setItem('stringShowCart', JSON.stringify(showCartArray));
     console.log(showCartArray);
   }
       
@@ -597,12 +597,16 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
             form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
             const btn = document.getElementById('close-session');
             btn.addEventListener('click',function(e){location.reload(e);});
+
             if(session[0]){
               let newCart = JSON.parse(localStorage.getItem('stringCart'));
               showQuantity(newCart);
               showCart();
               isthereCart();
               emptyBttn.addEventListener('click', emptyCart);
+              paymentBttn.addEventListener('click',payment);
+              console.log(paying);
+              
               
               
               
@@ -657,11 +661,11 @@ async function emptyCart(){
 
 function errorInit(){
   if(!session[0]){
-    const getDivError = document.getElementById('error-execute');
-    getDivError.innerHTML = '<h2 class="message">Debes Iniciar Sesión Para Comprar o Vaciar el Carro </h2>';
+    const getDivError = document.getElementById('execute');
+    getDivError.innerHTML = '<h2 class="message error-init-stock">Debes Iniciar Sesión Para Comprar o Vaciar el Carro </h2>';
     setTimeout(function(){
       removeElementsByClass('message');
-    }, 3000)
+    }, 3000);
   }
 }
 
@@ -669,7 +673,85 @@ emptyBttn.addEventListener('click', errorInit);
 paymentBttn.addEventListener('click', errorInit);
 
 
-function payment(){
-  let paying = [];
+async function payment(){
+  try{
+    const getDivpayment = document.getElementById('execute'); 
+    getDivpayment.innerHTML ='<h2 class="message">Ejecutando el Pago...</h2>';
   
+  
+  let stringShowCart = await JSON.parse(localStorage.getItem('stringShowCart'));
+  let stringStock = await JSON.parse(localStorage.getItem('stringStock'));
+  let newStringStock = [];
+  stringStock.forEach((value, i) =>{
+
+    let object = stringShowCart.filter( stockProduct => stockProduct.id === value.id );
+    if(object.length === 0 ){
+      newStringStock.push(value);
+    }else{
+      
+      console.log(value.stock, object);
+      
+      value.stock = value.stock - object[0].quantity;
+      newStringStock.push(value);
+    }
+    
+  });
+  localStorage.removeItem('stringStock');
+  localStorage.removeItem('stringShowCart');
+
+  console.log(newStringStock);
+  localStorage.setItem('stringShowCart', JSON.stringify([]));
+  localStorage.setItem('stringStock', JSON.stringify(newStringStock));
+  showStock();
+  
+  // stringShowCart.forEach(async productInCart =>{
+  //   try{
+  //     let stringStock = await JSON.parse(localStorage.getItem('stringStock'));
+  //     let product = stringStock.filter(product => product.id === productInCart.id);
+  //     product.stock = product.stock - productInCart.quantity;
+  //     stringStock.slice(productInCart.id - 1, 1, {product}  );    
+  //     localStorage.setItem('stringStock', JSON.stringify(stringStock));
+
+  //   }catch(error){}
+  // });
+  
+  
+  
+  
+
+  
+  }catch(err){
+
+  }finally{
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => button.disabled = true);
+    
+    setTimeout(function(){
+      removeElementsByClass('product-in-cart');
+      removeElementsByClass('message');
+      let shipping = document.getElementById('shipping');
+      shipping.innerHTML = '';
+      let getShowTotal = document.getElementById('total-value');
+      getShowTotal.innerHTML = '';
+      buttons.forEach(button => button.disabled = false);
+      
+
+      
+    emptyCart();
+
+    }, 3000);}
+
 }
+
+// debes hacer que el for each que esta arriba busque el producto, lo saque, le cambie el quantity y lo vuelves a meter al stringCart 
+
+const reset = document.getElementById('reset');
+reset.addEventListener('click', function(e){
+  localStorage.removeItem('stringStock');
+  localStorage.removeItem('stringShowCart');
+
+  localStorage.setItem('stringShowCart', JSON.stringify([]));
+  localStorage.setItem('stringStock', JSON.stringify([]));
+  setDefaultStock(false, 5);
+  location.reload(e);
+});
