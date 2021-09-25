@@ -1,16 +1,15 @@
+//sesion almacena el valor true o false dependiendo si ya s inció sesión
 const session = [false];
-
-//const stockSetted = localStorage.getItem(alreadySetted) ?? false ;
-let done = [true];
-let intact;
 let alreadySetted;
 let stringStock;
-const stockIntact = localStorage.getItem('intact') ?? false; //me dice si ya se compró algún producto
 let stockSetted = localStorage.getItem('alreadySetted') ?? false; // me dice si ya se seteó el arreglo con el stock
 let stockProducts = localStorage.getItem('stringStock') ?? false; //revisa si ya se seteo el stock y trae el arreglo con los productos,este es para actualizar
-let stringCart = localStorage.getItem('stringCart') ?? false;
+let stringCart = localStorage.getItem('stringCart') ?? false; // revisamos si existe un carrito ya que este se guarda  
 
-//falta crear funcion que coloque los elementos del carro
+
+
+
+//creamos la clase de productos la cual contendrá la info de estos con tal de mostrarla en el carro 
 class Product {
   constructor(id, name, price, btn, quantity){
     this.id = id;
@@ -19,14 +18,15 @@ class Product {
     this.btn = btn;
     this.quantity = 1;
 
-    function productData(){
-      console.log(id, name, price, btn, quantity);
+    // function productData(){
+    //   console.log(id, name, price, btn, quantity);
       
-    }
+    // }
   }
     
 }
  
+//la clase de stockProduct nos sirve para definir el stock de los productos dependiendo solo de su id
 class StockProduct{
   constructor(id, stock){
     this.id = id;
@@ -34,7 +34,9 @@ class StockProduct{
   }
 }
 
-let btns = [];
+// en products 
+
+
 let products = [];
 
 
@@ -89,15 +91,6 @@ async function setDefaultStock(isThereStock, stockToSet){
     
   
 }
-// function createCart(){
-//   let stringCart = localStorage.getItem('stringCart') ?? false;
-  
-//   if(stringCart == false){
-//     let stringCart = [];
-//     localStorage.setItem('stringCart', JSON.stringify(stringCart));
-//     console.log(1);
-//   }else{
-//     console.log(2);
 
 //funciona perfecto
 function createCart(isThereACart){
@@ -110,7 +103,6 @@ function createCart(isThereACart){
     }
   
   }
-//window.addEventListener('DOMContentLoaded',showQuantity(stringCart));
 
 //quantityInCart(null, true, true);
 setDefaultStock(stockProducts, 5); //aquí se setea el stock por default de manera manual o se muestra el stock ya disponible
@@ -237,7 +229,7 @@ async function showCart(){
     products.push(product);
     
     let getCart = await JSON.parse(localStorage.getItem('stringCart')); 
-    let productsInCart = getCart.filter(products => products.id == i); //bucamos en el cart cada uno de los productos 
+    let productsInCart = getCart.filter( products => products.id == i); //bucamos en el cart cada uno de los productos 
   
     let productCount = products[i-1];
     let totalQuantity = productsInCart.reduce((total, product) => total+product.quantity, 0);
@@ -262,12 +254,12 @@ async function showCart(){
 async function getShowCart(showCartArray){
   try{
   console.log(showCartArray);
-  let shippingPerProduct = showCartArray.length;
+  let shippingPerProduct = showCartArray.reduce( (total, quantity) => total + quantity.quantity , 0);
   let totalProducts =  showCartArray.reduce((total, product)=> total + product.price*product.quantity , 0); 
 
   let shippingCost = 1500;
   let totalPrice = shippingPerProduct*350 + totalProducts + shippingCost;
-  console.log(totalPrice);
+  console.log(totalProducts, shippingPerProduct, shippingCost);
   
   let ulProducts = document.getElementById('ul-cart');
   let ask = document.getElementsByTagName('li');
@@ -281,7 +273,7 @@ async function getShowCart(showCartArray){
     showProduct.innerHTML = `${value.name}<span class='product-checkout'> ${value.price} CLP + 350 CLP c/u  x ${value.quantity} = ${(value.price + 350)*value.quantity} </span>`;
     ulProducts.appendChild(showProduct);
     let shipping = document.getElementById('shipping');
-    shipping.innerHTML = `Envío: ${shippingCost} CLP + 350 CLP por producto`;
+    shipping.innerHTML = `Envío: ${shippingCost} CLP + 350 CLP por cada producto`;
     let getShowTotal = document.getElementById('total-value');
     getShowTotal.innerHTML = `${totalPrice} CLP `;
   
@@ -334,84 +326,20 @@ async function isthereCart(){
   }
 
 
-// function initStock(setted = false, stock){
-//   console.log(setted)
-//   if(!setted){
-//     const {products} = countProducts();
-//     products.forEach((value, i) =>{
-//       setStock(stock, i+1)
-      
-//     });
-    
-//     stockSetted.push(true);
-//     const stockset = localStorage.setItem(stockSetted[0]);
-    
-//   }
-
-//   return stockSetted[0];
-  
-// }
 
 
 
 
 
 
-// const name = document.getElementById(`product${i}`);
-//     const price = document.getElementById(`product-price${i}`);
-//     const stock = document.getElementById(`stock-product${i}`);
-//     const quantity = document.getElementById(`add-n-products${i}`);
-//     console.log(name.value, quantity.value, price.value);
-    
-//     const product = new Product(i, name.value, price.value, stock.value, `btn${i}`, quantity.value ?? 1);
-//     console.log(e, product)
-
-
-
-//Creamos la funcion de seleccionar el btn para agregar al carro 
-// for(let i = 1; i <= countProducts().length; i++){
-//   //let price = document.getElementById(`product-price${i}`);
-//   //let stock = 
-//   //= new Product(i, `product${i}`, price.value,   ){
-//   let btn = document.getElementById(`btnproduct${i}`);
-//   btn.addEventListener('click', e =>{
-//     e.preventDefault();
-//     console.log(e);
-    
-    
-//   } )
-//   btns.push(btn);
-// }
-
-
-
-// function addToCart(initiated, save, cart){ //aqui va sesssion[0]
-  
-//   if(initiated){
-    
-     
-//     console.log(session);
-//     let product = products.filter(products => products.id == save[0] );
-//     product.quantity = save[1];
-//     let addTocart =  cart.push(product);
-//     let totalProducts =  cart.filter(products=> products.id == save[0] ); // me devuelve los productos en el carro del id ==save[0]
-//     let totalQuantity = totalProducts.reduce( (total, product) => total + product.quantity, 0 ); 
-//     let stockProducts =  JSON.parse(localStorage.getItem('stringStock'));
-//     localStorage.setItem('stringCart', cart);
-//     console.log(cart);
-    
-//     if(totalQuantity > stockProducts[save[0] - 1].stock  ){
-//       console.log('to much');
-//     }
-    
-// }
-// }
 
 
 
 
 
 
+
+  let btns = [];
 
 /////////creamos lo botones y su funcion que devuelve la cantidad y 
 for(let i = 1; i<= countProducts().length; i++){
@@ -469,23 +397,7 @@ function returnBtn(i){
   return {save};
 }
 /////////////////////////////////////////////////////
-// window.addEventListener('DOMContentLoaded', e =>{
-//   for(let i = 1; i <= countProducts().length; i++){
-  
-//     let name = document.getElementById(`product${i}`).innerHTML;
-//     let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
-//     let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
-//     //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
-//     let btn = document.getElementById(`btnproduct${i}`);
-    
-//     const product = new Product(i, name, price, stock, btn, 0);
-//     //console.log(product);
-    
-    
-//     products.push(product);
-//   }
-// });
-//console.log(products);
+
 
 
 const initSession = document.getElementById('init-show');
@@ -704,18 +616,6 @@ async function payment(){
   localStorage.setItem('stringStock', JSON.stringify(newStringStock));
   showStock();
   
-  // stringShowCart.forEach(async productInCart =>{
-  //   try{
-  //     let stringStock = await JSON.parse(localStorage.getItem('stringStock'));
-  //     let product = stringStock.filter(product => product.id === productInCart.id);
-  //     product.stock = product.stock - productInCart.quantity;
-  //     stringStock.slice(productInCart.id - 1, 1, {product}  );    
-  //     localStorage.setItem('stringStock', JSON.stringify(stringStock));
-
-  //   }catch(error){}
-  // });
-  
-  
   
   
 
@@ -735,11 +635,18 @@ async function payment(){
       getShowTotal.innerHTML = '';
       buttons.forEach(button => button.disabled = false);
       
+      const getDivpayment = document.getElementById('execute'); 
+      getDivpayment.innerHTML ='<h2 class="message">Compra Exitosa</h2>';
 
       
     emptyCart();
 
-    }, 3000);}
+    }, 3000);
+  
+    setTimeout(function(){
+      removeElementsByClass('message')
+    }, 5000);
+  }
 
 }
 
