@@ -39,7 +39,9 @@ class StockProduct{
 
 let products = [];
 
-
+//la funcion count products cuenta los productos que existen en el html, los productos nuevos se deben añadir en el html usando la plantilla detallada
+//nota: pensé en hacerlo en vez de usar un ciclo for y usar id's, en usar una sola clase para todos y hacer un for each y dependiendo del indice proceder desde ahí, pero 
+//ya no alcanzaba a implementarlo, de todas maneras en una de las funcionalidades hice algo así.
 function countProducts(){
   const getProducts = document.getElementsByClassName('sticker-container'); //funciona
   //console.trace(getProducts.length);
@@ -53,6 +55,7 @@ function countProducts(){
 }
 countProducts(); //cuenta los productos
 
+//muestra el stock disponible desde el arreglo en el local storage, esta funcion se ejecuta de inmediato dentro de setdefault stock en caso de que ya exista un stock definido
 async function showStock(){
     
   try{let stock = await JSON.parse(localStorage.getItem('stringStock'));  
@@ -61,13 +64,11 @@ async function showStock(){
     let stockTag = document.getElementById(`stock-product${i+1}`);
     stockTag.innerHTML =`${value.stock}`; 
   });
-    }catch(error){
-
-    }
+    }catch(error){}
   
-    }
+}
 
-//hace carro de la misma manera
+//revisa si ya existe un stock, si ya existe lo muestra con showStock y si no existe lo crea y lo muestra con showStock
 async function setDefaultStock(isThereStock, stockToSet){
   if(!isThereStock){
     let stockProducts= [];
@@ -93,6 +94,7 @@ async function setDefaultStock(isThereStock, stockToSet){
 }
 
 //funciona perfecto
+//le ingresamos stringCart definido al proncipio si nos da false crea el carro y si ya existe no hace nada
 function createCart(isThereACart){
   if(!isThereACart){
     let initCart= [];
@@ -104,37 +106,12 @@ function createCart(isThereACart){
   
   }
 
-//quantityInCart(null, true, true);
+
 setDefaultStock(stockProducts, 5); //aquí se setea el stock por default de manera manual o se muestra el stock ya disponible
-createCart(stringCart);
-
- async function quantityInCart( option, done, session){//totalQuantity, save, done,
-  let getCart = await JSON.parse(localStorage.getItem('stringCart'));
-  let pTags = document.querySelectorAll('.in-cart');
-  //pTag[save[0]-1].innerHTML = totalQuantity;
-  
-  switch (option){
-    case 'update':
-      
-    
-    
-    break;
-  
-    default:
-      
-
-      products.forEach((value, i) =>{
-        let totalProducts = getCart.filter(products=> products.id == i+1 ); // me devuelve los productos en el carro del id ==save[0]
-        let totalQuantity =  totalProducts.reduce( (total, product) => total + product.quantity, 0 ); //cuanto es el total de la suma de las cantidades que hay en el carro
-        let pTag = pTags[i];
-        pTag.innerHTML=`${totalQuantity}`;
-      });
-    
-    }
-    
-}
+createCart(stringCart); //se revisa si existe un carro y si no es así se crea uno
 
 
+//shoQuantity busca las etiquetas en donde colocaremos la cantidad en el carro de cada producto y coloca desde products las catidades correspondientes en cada etiqueta
 async function showQuantity(cart){
     
   try{
@@ -150,12 +127,9 @@ async function showQuantity(cart){
     }
 }
   
-
-
-
-
-
-
+//addToCart recibe session y save, session es un arreglo cuyo unico valor será true o false dependiendo de si se inicio sesión, save es un arreglo entrega
+//[id del producto del bton que se seleccionó, cantidad de productos que se quieren añadir]
+//
 async function addToCart(session, save){
   if(session){
       try{
@@ -175,9 +149,8 @@ async function addToCart(session, save){
         console.log('added');
         
         
-        if(totalQuantity > stockProducts[save[0] - 1].stock  ){
-        //scar el objeto del arreglo de string cart, está en el local storage
-        let reviewcart = await JSON.parse(localStorage.getItem('stringCart'));
+        if(totalQuantity > stockProducts[save[0] - 1].stock  ){ //si la suma de las cantidades es mayor al stock se elimina el producto de stringCart y muestra un error
+       
         cart.pop();
         localStorage.setItem('stringCart', JSON.stringify(cart));
         
@@ -199,9 +172,9 @@ async function addToCart(session, save){
       
     }catch(err){
 
-      }finally{
+      }finally{ //nos devuelve showcart array que es el arreglo que contiene a los elementos que se muestran en la lista 
           let newCart = await JSON.parse(localStorage.getItem('stringCart'));
-          await showQuantity(newCart);
+          await showQuantity(newCart); //llamamos a showquantity para refrescar la cantidad en el carro 
           let showCartArray = await showCart();
           return showCartArray;
        }
@@ -214,9 +187,11 @@ async function addToCart(session, save){
 let results = [];
 
 
-
+//esta funcion llama al string cart y crea el arreglo para visualizar el carro en la interfaz, es decir, crea stringShowCart
+//nota: stringCart recibe todos los productos y stringShowCart recibe los productos y agrupa los del mismo tipo .
 async function showCart(){
-  try{let showCartArray = [];
+  try{
+  let showCartArray = [];
   for(let i = 1; i <= countProducts().length; i++){
     let name = document.getElementById(`product${i}`).innerHTML;
     let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
@@ -250,7 +225,7 @@ async function showCart(){
 
 }
 
-
+//recibe showCartArray y lo procesa par mostrarlo dentro del html, el carro se muestra solo si se ha iniciado sesión, también calcula los costos y los muestra.
 async function getShowCart(showCartArray){
   try{
   console.log(showCartArray);
@@ -283,43 +258,41 @@ async function getShowCart(showCartArray){
 }
 
 
-
+//isThereCart resvisa si se inició sesion obtiene los datos de los productos para mostrarlos en el carro aqúi y setea el StringShowCart después lo manda a getShowCart().
 async function isthereCart(){
-    try{let isthereCart = await JSON.parse(localStorage.getItem('stringCart'));
-    if(session[0]){
-      if(isthereCart.length == 0){
-
-      }else{
-        let showCartArray = [];
-  for(let i = 1; i <= countProducts().length; i++){
-    let name = document.getElementById(`product${i}`).innerHTML;
-    let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
-    let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
-    //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
-    let btn = document.getElementById(`btnproduct${i}`);
+    try{
+      let isthereCart = await JSON.parse(localStorage.getItem('stringCart'));
+      if(session[0] && isthereCart.length != 0 ){
+          let showCartArray = [];
+    for(let i = 1; i <= countProducts().length; i++){
+      let name = document.getElementById(`product${i}`).innerHTML;
+      let price = parseInt(document.getElementById(`product-price${i}`).innerHTML);
+      let stock = parseInt(document.getElementById(`stock-product${i}`).innerHTML);
+      //let quantity = document.getElementById(`add-n-products${i}`).innerHTML;
+      let btn = document.getElementById(`btnproduct${i}`);
+      
+      const product = new Product(i, name, price, stock, btn, 1);
+      //console.log(product);
+      products.push(product);
+      
+      let getCart = await JSON.parse(localStorage.getItem('stringCart')); //cambiar esto es el problema
+      let productsInCart = getCart.filter( products => products.id == i); //bucamos en el cart cada uno de los productos 
     
-    const product = new Product(i, name, price, stock, btn, 1);
-    //console.log(product);
-    products.push(product);
-    
-    let getCart = await JSON.parse(localStorage.getItem('stringCart')); //cambiar esto es el problema
-    let productsInCart = getCart.filter( products => products.id == i); //bucamos en el cart cada uno de los productos 
-  
-    let productCount = products[i-1];
-    let totalQuantity = productsInCart.reduce((total, product) => total+product.quantity, 0);
-    console.log(productsInCart, totalQuantity, productCount);
-    productCount.quantity = totalQuantity;
-    if(productsInCart.length!= 0){
-    showCartArray.push(productCount);
-    }
+      let productCount = products[i-1];
+      let totalQuantity = productsInCart.reduce((total, product) => total+product.quantity, 0);
+      console.log(productsInCart, totalQuantity, productCount);
+      productCount.quantity = totalQuantity;
+      if(productsInCart.length!= 0){
+      showCartArray.push(productCount);
+      }
 
-    localStorage.setItem('stringShowCart', JSON.stringify(showCartArray));
-    console.log(showCartArray);
+      localStorage.setItem('stringShowCart', JSON.stringify(showCartArray));
+      console.log(showCartArray);
   }
       
   getShowCart(showCartArray);
 
-}
+
     }
   }catch(error){console.log(error);
   }
@@ -341,13 +314,13 @@ async function isthereCart(){
 
   let btns = [];
 
-/////////creamos lo botones y su funcion que devuelve la cantidad y 
+/////////creamos lo botones de añadir al carro y su funcion que devuelve la cantidad y 
 for(let i = 1; i<= countProducts().length; i++){
   let btn = document.getElementById(`btnproduct${i}`);
   btns.push(btn);
   btn.addEventListener('click',async e =>{
     e.preventDefault();
-    let {save} =returnBtn(i);
+    let {save} = returnBtn(i);
     reviewSession(save[0]);
     let showCartArray = await addToCart(session[0], save);
     getShowCart(showCartArray);
@@ -363,7 +336,7 @@ for(let i = 1; i<= countProducts().length; i++){
 
 
 
-//funcion que revisa si se inició sesion
+//funcion que revisa si se inició sesion a la hora de añadir los productos al carro
 
 function reviewSession(product){
   if(!session[0]){
@@ -383,7 +356,7 @@ function reviewSession(product){
 
 ///////////////////////////////////////////
 
-
+//esta funcion me entrega el valor del id y de la cantidad que se está seleccionando con el boton de añadir al carro
 function returnBtn(i){
   let save = [];
   const numBtn = i;
@@ -398,7 +371,7 @@ function returnBtn(i){
 }
 /////////////////////////////////////////////////////
 
-
+//con esto desplegamos el inicio de sesión al clickear el texto de inicio de sesion //y sellama a callbtn que a su vez llama a onSubmit
 
 const initSession = document.getElementById('init-show');
 initSession.addEventListener('click', function(){
@@ -425,8 +398,8 @@ initSession.addEventListener('click', function(){
 });
 
 
-
-function inputValueValidation(input, validations = []) { //cada cosa que se queira validar cae en un case dependiendo de cual sea
+//con esta funcion revisamos las validaciones que se reciben de in submit, aqquí se muestran los posibles errores a 
+function inputValueValidation(input, validations = []) { //cada cosa que se queira validar cae en un case dependiendo de cual sea el caso
     const { value } = input;
     let isValid = true;
     let showError = document.getElementById('error-user');
@@ -478,68 +451,68 @@ function inputValueValidation(input, validations = []) { //cada cosa que se quei
   }
 
 
-     function onSubmit(e) { 
-        e.preventDefault();
-        const user = document.getElementById('user-name');
-        const password = document.getElementById('password');
-        const formData =  [
-        [user, ['required', 'user']],
-        [password, ['required', 'password']]
-        ];
+//aquí emitimos el mensaje o activamos distintas funciones dependiendo de que se nos entregó en input value Validation, es decir, si es que se inició sesión o no.
+function onSubmit(e) { 
+  e.preventDefault();
+  const user = document.getElementById('user-name');
+  const password = document.getElementById('password');
+  const formData =  [
+  [user, ['required', 'user']],
+  [password, ['required', 'password']]
+  ];
+    
+  console.log(!session[0]);  
+  if(!session[0]){
+    const areValids =[];
+    formData.forEach(el => {
         
-      console.log(!session[0]);  
-      if(!session[0]){
-        const areValids =[];
-        formData.forEach(el => {
-            
-          const {isValid} = inputValueValidation(el[0], el[1]);
-          areValids.push(isValid);
+      const {isValid} = inputValueValidation(el[0], el[1]);
+      areValids.push(isValid);
 
-        });
-        
-        console.log(areValids[0], areValids[1]);
-        if(areValids[1] && areValids[0]){
-            const welcome = document.getElementById('welcome');
-            const form = document.getElementById('session');
-            welcome.innerHTML = `Bienvenido ${user.value}`;
-            session.shift();
-            session.push(true);
-            console.trace(session);
-            removeElementsByClass('btn-user');
-            form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
-            const btn = document.getElementById('close-session');
-            btn.addEventListener('click',function(e){location.reload(e);});
+    });
+    
+    console.log(areValids[0], areValids[1]);
+    if(areValids[1] && areValids[0]){
+        const welcome = document.getElementById('welcome');
+        const form = document.getElementById('session');
+        welcome.innerHTML = `Bienvenido ${user.value}`;
+        session.shift();
+        session.push(true);
+        console.trace(session);
+        removeElementsByClass('btn-user');
+        form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
+        const btn = document.getElementById('close-session');
+        btn.addEventListener('click',function(e){location.reload(e);});
 
-            if(session[0]){
-              let newCart = JSON.parse(localStorage.getItem('stringCart'));
-              showQuantity(newCart);
-              showCart();
-              isthereCart();
-              emptyBttn.addEventListener('click', emptyCart);
-              paymentBttn.addEventListener('click',payment);
-              console.log(paying);
-              
-              
-              
-              
-    }}}else if(session[0]){
-      const initiated = document.getElementById('initiated');
-      const form = document.getElementById('session');
-      initiated.innerHTML = `<h2  class='slogan welcome red'>La sesión ya esta iniciada</h2>`;
-      removeElementsByClass('btn-user');
-      form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
-      const btn = document.getElementById('close-session');
-      btn.addEventListener('click',e => location.reload(e));
-      
+        if(session[0]){
+          //inicializamos todas estas funciones
+          let newCart = JSON.parse(localStorage.getItem('stringCart'));
+          showQuantity(newCart); //el carro solo es visible si se inicia sesión          
+          showCart();
+          isthereCart();
+          emptyBttn.addEventListener('click', emptyCart);
+          paymentBttn.addEventListener('click',payment);
+          
+          
+          
+          
+}}}else if(session[0]){
+    const initiated = document.getElementById('initiated');
+    const form = document.getElementById('session');
+    initiated.innerHTML = `<h2  class='slogan welcome red'>La sesión ya esta iniciada</h2>`;
+    removeElementsByClass('btn-user');
+    form.innerHTML =` <div class='btn-user'> <button id='close-session' class='btn'>Cerrar Sesión</button> </div>`;
+    const btn = document.getElementById('close-session');
+    btn.addEventListener('click',e => location.reload(e));
+    
 
 
-      setTimeout(() => {
-        removeElementsByClass('red');},5000);
-      
+    setTimeout(() => {
+      removeElementsByClass('red');},5000);
+}
+  }
 
-    }
-     }
-
+//funcion que nos ayuda a eliminar mensajes de error o de compra
 function removeElementsByClass(className){
   const elements = document.getElementsByClassName(className);
   while(elements.length > 0){
@@ -548,22 +521,27 @@ function removeElementsByClass(className){
 
 
 
-//funcion que consulta el stock si se inició sesión
 
+//llamamos al boton de avaciar carro y al de comprar
 const emptyBttn = document.getElementById('empty-cart');
 const paymentBttn= document.getElementById('payment-btn');
 
+//esta funcion se llama al iniciar sesion, y vacia el carro tanto del localstorage como de la parte visible
 async function emptyCart(){
   try{
     let stringCart = await JSON.parse(localStorage.getItem('stringCart'));
     let newArray = [];
     localStorage.setItem('stringCart', JSON.stringify(newArray));
+    let stringShowCart = await JSON.parse(localStorage.getItem('stringShowCart'));
+    localStorage.setItem('stringShowCart', JSON.stringify([]));
+
     if(session[0]){
       removeElementsByClass('product-in-cart');
     let shipping = document.getElementById('shipping');
     shipping.innerHTML = '';
     let getShowTotal = document.getElementById('total-value');
     getShowTotal.innerHTML = '';
+     
     }
   
   }catch(err){console.log(err);
@@ -571,6 +549,7 @@ async function emptyCart(){
     
 }}
 
+//funcion que se encarga de mostrar un error
 function errorInit(){
   if(!session[0]){
     const getDivError = document.getElementById('execute');
@@ -581,10 +560,11 @@ function errorInit(){
   }
 }
 
+//le añadimos los mensajes de error al hacer click
 emptyBttn.addEventListener('click', errorInit);
 paymentBttn.addEventListener('click', errorInit);
 
-
+//funcion que se encarga de ejecutar el pago
 async function payment(){
   try{
     const getDivpayment = document.getElementById('execute'); 
@@ -594,6 +574,8 @@ async function payment(){
   let stringShowCart = await JSON.parse(localStorage.getItem('stringShowCart'));
   let stringStock = await JSON.parse(localStorage.getItem('stringStock'));
   let newStringStock = [];
+  let newCart = await JSON.parse(localStorage.getItem('stringCart'));
+
   stringStock.forEach((value, i) =>{
 
     let object = stringShowCart.filter( stockProduct => stockProduct.id === value.id );
@@ -644,15 +626,15 @@ async function payment(){
     }, 3000);
   
     setTimeout(function(){
-      removeElementsByClass('message')
+      removeElementsByClass('message');
     }, 5000);
   }
 
 }
 
-// debes hacer que el for each que esta arriba busque el producto, lo saque, le cambie el quantity y lo vuelves a meter al stringCart 
-
+// funcion que se encarga de resetar a los valores por defecto
 const reset = document.getElementById('reset');
+
 reset.addEventListener('click', function(e){
   localStorage.removeItem('stringStock');
   localStorage.removeItem('stringShowCart');
