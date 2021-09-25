@@ -115,6 +115,7 @@ createCart(stringCart); //se revisa si existe un carro y si no es así se crea u
 async function showQuantity(cart){
     
   try{
+
     let pTags = document.querySelectorAll('.in-cart');
     products.forEach((value, i) =>{
       let totalProducts = cart.filter(products=> products.id == i+1 ); // me devuelve los productos en el carro del id ==save[0]
@@ -122,11 +123,9 @@ async function showQuantity(cart){
       let pTag = pTags[i];
       pTag.innerHTML=`${totalQuantity}`;
     });
-    }catch(error){
-
-    }
+  }catch(error){
 }
-  
+}
 //addToCart recibe session y save, session es un arreglo cuyo unico valor será true o false dependiendo de si se inicio sesión, save es un arreglo entrega
 //[id del producto del bton que se seleccionó, cantidad de productos que se quieren añadir]
 //
@@ -534,6 +533,12 @@ async function emptyCart(){
     localStorage.setItem('stringCart', JSON.stringify(newArray));
     let stringShowCart = await JSON.parse(localStorage.getItem('stringShowCart'));
     localStorage.setItem('stringShowCart', JSON.stringify([]));
+    let pTags = document.querySelectorAll('.in-cart');
+    for(let i = 0; i< countProducts().length; i++){
+      
+      let pTag = pTags[i];
+      pTag.innerHTML='0';
+    }
 
     if(session[0]){
       removeElementsByClass('product-in-cart');
@@ -575,7 +580,7 @@ async function payment(){
   let stringStock = await JSON.parse(localStorage.getItem('stringStock'));
   let newStringStock = [];
   let newCart = await JSON.parse(localStorage.getItem('stringCart'));
-
+  
   stringStock.forEach((value, i) =>{
 
     let object = stringShowCart.filter( stockProduct => stockProduct.id === value.id );
@@ -622,6 +627,12 @@ async function payment(){
 
       
     emptyCart();
+    let pTags = document.querySelectorAll('.in-cart');
+    for(let i = 0; i< countProducts().length; i++){
+      
+      let pTag = pTags[i];
+      pTag.innerHTML='0';
+    }
 
     }, 3000);
   
